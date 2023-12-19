@@ -76,17 +76,17 @@
 /// @brief Get vec's len.
 /// @param self valid pointer
 /// @return vec's len
-#define vec_len(self) (self)->len
+#define vec_len(self) ((const size_t)(self)->len)
 
 /// @brief Get vec's capacity.
 /// @param self valid pointer
 /// @return vec's capacity
-#define vec_cap(self) (self)->cap
+#define vec_cap(self) ((const size_t)(self)->cap)
 
 /// @brief Get vec's internal buffer.
 /// @param self valid pointer
 /// @return pointer to vec's buffer
-#define vec_buf(self) (self)->data
+#define vec_buf(self) ((const void *const)(self)->data)
 
 /// @brief Gets the element (with bounds checking).
 /// @param self valid pointer
