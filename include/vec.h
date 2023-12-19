@@ -41,7 +41,7 @@
 /// @return
 ///   `true` - success;
 ///   `false` - `malloc` failed
-#define vec_vtbl_init(self) (self, VecT)->vtbl = &private_##VecT##_vtbl
+#define vec_vtbl_init(self, VecT) (self)->vtbl = &private_##VecT##_vtbl
 
 /// @brief Inits an ampty vec.
 /// @param self valid pointer
