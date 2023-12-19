@@ -41,22 +41,22 @@
 /// @return
 ///   `true` - success;
 ///   `false` - `malloc` failed
-#define vec_vtbl_init(self)
+#define vec_vtbl_init(self) (self, VecT)->vtbl = &private_##VecT##_vtbl
 
 /// @brief Inits an ampty vec.
 /// @param self valid pointer
 /// @param VecT vector type (for getting vtable)
 /// @return `Result`
-#define vec_init(self, VecT)                                                   \
-  (self)->vtbl = &private_##VecT##_vtbl, (self)->vtbl->init(self)
+#define vec_init(self, VecT) vec_vtbl_init(self, VecT), (self)->vtbl->init(self)
 
 /// @brief Inits a vec and populates it with values from `arr`.
 /// @param self valid pointer
 /// @param arr array to take values from
 /// @param arr_len length of `arr`
 /// @return `Result`
-#define vec_init_from_arr(self, arr, arr_len)                                  \
-  (self)->vtbl->init_from_arr((self), (arr), (arr_len))
+#define vec_init_from_arr(self, VecT, arr, arr_len)                            \
+  vec_vtbl_init(self, VecT),                                                   \
+    (self)->vtbl->init_from_arr((self), (arr), (arr_len))
 
 /// @brief Inits a vec and populates it `n` times with `element` value from
 /// `arr`.
@@ -64,8 +64,8 @@
 /// @param element value to populate with
 /// @param n how many times `element` is repeated
 /// @return `Result`
-#define vec_init_filled(self, element, n)                                      \
-  (self)->vtbl->init_filled((self), (element), (n))
+#define vec_init_filled(self, VecT, element, n)                                \
+  vec_vtbl_init(self, VecT), (self)->vtbl->init_filled((self), (element), (n))
 
 /// @brief Uninits a vec. Using other functions on an uninited vec can cause
 /// undefined behavior.
