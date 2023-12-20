@@ -7,18 +7,21 @@
 
 #define VEC_MIN_CAP (1)
 
-#define vec_vtbl1(VecT) VecT##Vtbl
-#define vec_vtbl(VecT)  vec_vtbl1(VecT)
+#define private_vec_vtbl1(VecT) VecT##Vtbl
+#define private_vec_vtbl(VecT)  private_vec_vtbl1(VecT)
 
-#define decl_vec(VecT, T)                                                      \
-  typedef struct vec_vtbl(VecT) vec_vtbl(VecT);                                \
+#define private_vec_fn2(type, name) (private_##type##_##name)
+#define private_vec_fn1(type, name) private_vec_fn2(type, name)
+
+#define private_decl_vec(VecT, T)                                              \
+  typedef struct private_vec_vtbl(VecT) private_vec_vtbl(VecT);                \
   typedef struct VecT {                                                        \
     size_t len, cap;                                                           \
     T *data;                                                                   \
     size_t el_size;                                                            \
-    const vec_vtbl(VecT) * vtbl;                                               \
+    const private_vec_vtbl(VecT) * vtbl;                                       \
   } VecT;                                                                      \
-  struct vec_vtbl(VecT) {                                                      \
+  struct private_vec_vtbl(VecT) {                                              \
     Result (*const init)(VecT *const);                                         \
     Result (*const init_from_arr)(VecT *const, const T *const, const size_t);  \
     Result (*const init_filled)(VecT *const, const T, const size_t);           \
@@ -36,18 +39,14 @@
     Result (*const clear)(VecT *const);                                        \
   }
 
-/// @brief Inits an ampty vec.
-/// @param self valid pointer
-/// @return
-///   `true` - success;
-///   `false` - `malloc` failed
-#define vec_vtbl_init(self, VecT) (self)->vtbl = &private_##VecT##_vtbl
+#define private_vec_vtbl_init(self, VecT) private_vec_fn1(VecT, init_vtbl)(self)
 
 /// @brief Inits an ampty vec.
 /// @param self valid pointer
 /// @param VecT vector type (for getting vtable)
 /// @return `Result`
-#define vec_init(self, VecT) vec_vtbl_init(self, VecT), (self)->vtbl->init(self)
+#define vec_init(self, VecT)                                                   \
+  (private_vec_vtbl_init(self, VecT), (self)->vtbl->init(self))
 
 /// @brief Inits a vec and populates it with values from `arr`.
 /// @param self valid pointer
@@ -55,8 +54,8 @@
 /// @param arr_len length of `arr`
 /// @return `Result`
 #define vec_init_from_arr(self, VecT, arr, arr_len)                            \
-  vec_vtbl_init(self, VecT),                                                   \
-    (self)->vtbl->init_from_arr((self), (arr), (arr_len))
+  (private_vec_vtbl_init(self, VecT),                                          \
+   (self)->vtbl->init_from_arr((self), (arr), (arr_len)))
 
 /// @brief Inits a vec and populates it `n` times with `element` value from
 /// `arr`.
@@ -65,8 +64,8 @@
 /// @param n how many times `element` is repeated
 /// @return `Result`
 #define vec_init_filled(self, VecT, element, n)                                \
-  vec_vtbl_init(self, VecT), (self)->vtbl->init_filled((self), (element), (n))
-
+  (private_vec_vtbl_init(self, VecT),                                          \
+   (self)->vtbl->init_filled((self), (element), (n)))
 /// @brief Uninits a vec. Using other functions on an uninited vec can cause
 /// undefined behavior.
 /// @param self valid pointer
@@ -140,7 +139,7 @@
 /// @return `Result` (technically, failure is impossable, but who really knows?)
 #define vec_clear(self) (self)->vtbl->clear(self)
 
-decl_vec(AnyVec, void *);
+private_decl_vec(AnyVec, void *);
 
 Result any_vec_init(AnyVec *const self, const size_t el_size);
 void any_vec_uninit(AnyVec *const self);

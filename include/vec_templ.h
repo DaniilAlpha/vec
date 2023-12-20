@@ -12,43 +12,29 @@
 
 #include "vec.h"
 
-#define vec_fn2(prefix, name) (private_##prefix##_##name)
-#define vec_fn1(prefix, name) vec_fn2(prefix, name)
-#define vec_fn(name)          vec_fn1(VecT, name)
+#define private_vec_fn(name) private_vec_fn1(VecT, name)
 
-#define this_vec_init_vtbl vec_fn(init_vtbl)
+#define this_vec_init_vtbl private_vec_fn(init_vtbl)
 
-#define this_vec_init vec_fn(init)
+#define this_vec_init          private_vec_fn(init)
+#define this_vec_init_from_arr private_vec_fn(init_from_arr)
+#define this_vec_init_filled   private_vec_fn(init_filled)
 
-#define this_vec_init_from_arr vec_fn(init_from_arr)
+#define this_vec_at    private_vec_fn(at)
+#define this_vec_first private_vec_fn(first)
+#define this_vec_last  private_vec_fn(last)
 
-#define this_vec_init_filled vec_fn(init_filled)
+#define this_vec_push   private_vec_fn(push)
+#define this_vec_insert private_vec_fn(insert)
+#define this_vec_remove private_vec_fn(remove)
+#define this_vec_pop    private_vec_fn(pop)
 
-#define this_vec_uninit vec_fn(uninit)
+#define this_vec_clear private_vec_fn(clear)
 
-#define this_vec_at vec_fn(at)
-
-#define this_vec_first vec_fn(first)
-
-#define this_vec_last vec_fn(last)
-
-#define this_vec_push vec_fn(push)
-
-#define this_vec_insert vec_fn(insert)
-
-#define this_vec_remove vec_fn(remove)
-
-#define this_vec_pop vec_fn(pop)
-
-#define this_vec_clear vec_fn(clear)
-
-decl_vec(VecT, T);
+private_decl_vec(VecT, T);
 
 static Result this_vec_init(VecT *const self) {
   return any_vec_init((AnyVec *const)self, sizeof(*self->data));
-}
-static void this_vec_uninit(VecT *const self) {
-  any_vec_uninit((AnyVec *const)self);
 }
 
 static T *this_vec_at(const VecT *const self, const size_t index) {
@@ -91,11 +77,6 @@ static Result this_vec_pop(VecT *const self) {
   return any_vec_decrement((AnyVec *const)self);
 }
 
-// TODO? maybe no need in `Result`
-static Result this_vec_clear(VecT *const self) {
-  return any_vec_reset((AnyVec *const)self);
-}
-
 // init extensions
 
 static Result this_vec_init_from_arr(
@@ -104,46 +85,44 @@ static Result this_vec_init_from_arr(
   const size_t arr_len
 ) {
   unroll(any_vec_init((AnyVec *const)self, sizeof(*self->data)));
-  for (const T *el = arr; el < arr + arr_len; el++) this_vec_push(self, *el);
+  for (const T *el = arr; el < arr + arr_len; el++)
+    unroll(this_vec_push(self, *el));
   return Ok;
 }
 static Result
 this_vec_init_filled(VecT *const self, const T element, const size_t n) {
   unroll(any_vec_init((AnyVec *const)self, sizeof(*self->data)));
-  for (size_t i = 0; i < n; i++) this_vec_push(self, element);
+  for (size_t i = 0; i < n; i++) unroll(this_vec_push(self, element));
   return Ok;
 }
 
-static const vec_vtbl(VecT) vec_fn(vtbl) = {
-  .init = this_vec_init,
-  .init_from_arr = this_vec_init_from_arr,
-  .init_filled = this_vec_init_filled,
-  .uninit = this_vec_uninit,
+// vtbl
 
-  .at = this_vec_at,
-  .first = this_vec_first,
-  .last = this_vec_last,
+void this_vec_init_vtbl(VecT *const self) {
+  static const private_vec_vtbl(VecT) vtbl = {
+    .init = this_vec_init,
+    .init_from_arr = this_vec_init_from_arr,
+    .init_filled = this_vec_init_filled,
+    .uninit = (void (*)(VecT *const))any_vec_uninit,
 
-  .push = this_vec_push,
-  .insert = this_vec_insert,
-  .remove = this_vec_remove,
-  .pop = this_vec_pop,
+    .at = this_vec_at,
+    .first = this_vec_first,
+    .last = this_vec_last,
 
-  .clear = this_vec_clear,
-};
+    .push = this_vec_push,
+    .insert = this_vec_insert,
+    .remove = this_vec_remove,
+    .pop = this_vec_pop,
 
-#undef forceinline
-#undef vec_fn2
-#undef vec_fn1
-#undef vec_fn
+    .clear = (Result(*)(VecT *const))any_vec_reset,
+  };
+  self->vtbl = &vtbl;
+}
 
+#undef this_vec_init_vtbl
 #undef this_vec_init
 #undef this_vec_init_from_arr
 #undef this_vec_init_filled
-#undef this_vec_uninit
-#undef this_vec_len
-#undef this_vec_cap
-#undef this_vec_buf
 #undef this_vec_at
 #undef this_vec_first
 #undef this_vec_last
@@ -151,8 +130,6 @@ static const vec_vtbl(VecT) vec_fn(vtbl) = {
 #undef this_vec_insert
 #undef this_vec_remove
 #undef this_vec_pop
-#undef this_vec_clear
 
 #undef VecT
 #undef T
-#undef VEC_FN_PREFIX
