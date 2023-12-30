@@ -1,3 +1,6 @@
+#ifndef RESULT_H
+#define RESULT_H
+
 typedef enum Result {
   Ok = 0,
   OutOfMemErr,
@@ -25,3 +28,5 @@ static const char *const result_msgs[] = {
     }                                                                          \
   }                                                                            \
   ((void)0)
+
+#endif
