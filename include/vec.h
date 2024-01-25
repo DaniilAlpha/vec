@@ -3,7 +3,7 @@
 
 #include <stddef.h>
 
-#include "result.h"
+#include <result.h>
 
 #define VEC_MIN_CAP (1)
 
