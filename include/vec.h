@@ -19,21 +19,21 @@
     size_t len, cap;                                                           \
     T *data;                                                                   \
     size_t el_size;                                                            \
-    const private_vec_vtbl(VecT) * vtbl;                                       \
+    private_vec_vtbl(VecT) const *vtbl;                                        \
   } VecT;                                                                      \
   struct private_vec_vtbl(VecT) {                                              \
     Result (*const init)(VecT *const);                                         \
-    Result (*const init_from_arr)(VecT *const, const T *const, const size_t);  \
-    Result (*const init_filled)(VecT *const, const T, const size_t);           \
+    Result (*const init_from_arr)(VecT *const, T const *const, size_t const);  \
+    Result (*const init_filled)(VecT *const, T const, size_t const);           \
     void (*const uninit)(VecT *const);                                         \
                                                                                \
-    T *(*const at)(const VecT *const, const size_t);                           \
-    T *(*const first)(const VecT *const);                                      \
-    T *(*const last)(const VecT *const);                                       \
+    T *(*const at)(VecT const *const, size_t const);                           \
+    T *(*const first)(VecT const *const);                                      \
+    T *(*const last)(VecT const *const);                                       \
                                                                                \
-    Result (*const push)(VecT *const, const T);                                \
-    Result (*const insert)(VecT *const, const size_t, const T);                \
-    Result (*const remove)(VecT *const, const size_t);                         \
+    Result (*const push)(VecT *const, T const);                                \
+    Result (*const insert)(VecT *const, size_t const, T const);                \
+    Result (*const remove)(VecT *const, size_t const);                         \
     Result (*const pop)(VecT *const);                                          \
                                                                                \
     Result (*const clear)(VecT *const);                                        \
@@ -75,17 +75,17 @@
 /// @brief Get vec's len.
 /// @param self valid pointer
 /// @return vec's len
-#define vec_len(self) ((const size_t)(self)->len)
+#define vec_len(self) ((size_t const)(self)->len)
 
 /// @brief Get vec's capacity.
 /// @param self valid pointer
 /// @return vec's capacity
-#define vec_cap(self) ((const size_t)(self)->cap)
+#define vec_cap(self) ((size_t const)(self)->cap)
 
 /// @brief Get vec's internal buffer.
 /// @param self valid pointer
 /// @return pointer to vec's buffer
-#define vec_buf(self) ((const void *const)(self)->data)
+#define vec_buf(self) ((void const *const)(self)->data)
 
 /// @brief Gets the element (with bounds checking).
 /// @param self valid pointer
@@ -141,7 +141,7 @@
 
 private_decl_vec(AnyVec, void *);
 
-Result any_vec_init(AnyVec *const self, const size_t el_size);
+Result any_vec_init(AnyVec *const self, size_t const el_size);
 void any_vec_uninit(AnyVec *const self);
 
 Result any_vec_increment(AnyVec *const self);

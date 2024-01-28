@@ -37,23 +37,23 @@ static Result this_vec_init(VecT *const self) {
   return any_vec_init((AnyVec *const)self, sizeof(*self->data));
 }
 
-static T *this_vec_at(const VecT *const self, const size_t index) {
+static T *this_vec_at(VecT const *const self, size_t const index) {
   return index >= self->len ? NULL : self->data + index;
 }
-static T *this_vec_first(const VecT *const self) {
+static T *this_vec_first(VecT const *const self) {
   return self->len == 0 ? NULL : self->data;
 }
-static T *this_vec_last(const VecT *const self) {
+static T *this_vec_last(VecT const *const self) {
   return self->len == 0 ? NULL : self->data + self->len - 1;
 }
 
-static Result this_vec_push(VecT *const self, const T element) {
+static Result this_vec_push(VecT *const self, T const element) {
   unroll(any_vec_increment((AnyVec *const)self));
   *vec_last(self) = element;
   return Ok;
 }
 static Result
-this_vec_insert(VecT *const self, const size_t index, const T element) {
+this_vec_insert(VecT *const self, size_t const index, T const element) {
   if (index >= self->len) return RangeErr;
 
   unroll(any_vec_increment((AnyVec *const)self));
@@ -65,7 +65,7 @@ this_vec_insert(VecT *const self, const size_t index, const T element) {
 
   return Ok;
 }
-static Result this_vec_remove(VecT *const self, const size_t index) {
+static Result this_vec_remove(VecT *const self, size_t const index) {
   if (index >= self->len) return RangeErr;
 
   for (T *e = self->data + index; e < self->data + self->len - 1; e++)
@@ -81,16 +81,16 @@ static Result this_vec_pop(VecT *const self) {
 
 static Result this_vec_init_from_arr(
   VecT *const self,
-  const T *const arr,
-  const size_t arr_len
+  T const *const arr,
+  size_t const arr_len
 ) {
   unroll(any_vec_init((AnyVec *const)self, sizeof(*self->data)));
-  for (const T *el = arr; el < arr + arr_len; el++)
+  for (T const *el = arr; el < arr + arr_len; el++)
     unroll(this_vec_push(self, *el));
   return Ok;
 }
 static Result
-this_vec_init_filled(VecT *const self, const T element, const size_t n) {
+this_vec_init_filled(VecT *const self, T const element, size_t const n) {
   unroll(any_vec_init((AnyVec *const)self, sizeof(*self->data)));
   for (size_t i = 0; i < n; i++) unroll(this_vec_push(self, element));
   return Ok;
@@ -99,7 +99,7 @@ this_vec_init_filled(VecT *const self, const T element, const size_t n) {
 // vtbl
 
 void this_vec_init_vtbl(VecT *const self) {
-  static const private_vec_vtbl(VecT) vtbl = {
+  static private_vec_vtbl(VecT) const vtbl = {
     .init = this_vec_init,
     .init_from_arr = this_vec_init_from_arr,
     .init_filled = this_vec_init_filled,
