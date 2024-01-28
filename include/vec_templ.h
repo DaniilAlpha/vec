@@ -29,8 +29,6 @@
 #define this_vec_remove private_vec_fn(remove)
 #define this_vec_pop    private_vec_fn(pop)
 
-#define this_vec_clear private_vec_fn(clear)
-
 private_decl_vec(VecT, T);
 
 static Result this_vec_init(VecT *const self) {
