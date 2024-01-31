@@ -96,8 +96,10 @@ Result any_vec_init_filled(
 }
 
 void *any_vec_at(AnyVec const *const self, size_t const index) {
-  return index >= self->len ? NULL
-                            : ((void *)self->data) + self->el_size * index;
+  if (index >= self->len) return NULL;
+  void *const ptr = ((void *)self->data) + self->el_size * index;
+  if (ptr < ((void *)self->data)) return NULL;
+  return ptr;
 }
 void *any_vec_first(AnyVec const *const self) {
   return self->len == 0 ? NULL : self->data;
