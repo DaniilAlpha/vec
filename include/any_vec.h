@@ -121,7 +121,7 @@
 
 /// @brief Inserts an element into a vec.
 /// @param self valid pointer
-/// @param index any number
+/// @param index index at which to insert
 /// @param element value to insert
 /// @return `Result`
 #define vec_insert(self, index, element)                                       \
@@ -129,7 +129,7 @@
 
 /// @brief Removes an element from a vec.
 /// @param self valid pointer
-/// @param index any number
+/// @param index index at which to remove
 /// @return `Result`
 #define vec_remove(self, index) ((self)->vtbl->remove((self), (index)))
 
