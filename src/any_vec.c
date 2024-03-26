@@ -140,7 +140,7 @@ Result any_vec_remove(AnyVec *const self, size_t const index) {
   memmove(
     any_vec_at(self, index),
     any_vec_at(self, index + 1),
-    self->el_size * ((self->len - 1) - (index + 1))
+    self->el_size * ((self->len - 1) - index)
   );
 
   return any_vec_decrement(self);
