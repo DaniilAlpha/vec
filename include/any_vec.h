@@ -14,34 +14,34 @@
 #define private_vec_fn1(type, name) private_vec_fn2(type, name)
 
 #define private_decl_vec(VecT, ElT)                                            \
-  typedef struct private_vec_vtbl(VecT) private_vec_vtbl(VecT);                \
-  typedef struct VecT {                                                        \
-    size_t len, cap;                                                           \
-    size_t el_size;                                                            \
-    ElT *data;                                                                 \
-    private_vec_vtbl(VecT) const *vtbl;                                        \
-  } VecT;                                                                      \
-  struct private_vec_vtbl(VecT) {                                              \
-    Result (*const init)(VecT *const);                                         \
-    Result (*const init_from_arr)(                                             \
-      VecT *const,                                                             \
-      ElT const *const,                                                        \
-      size_t const                                                             \
-    );                                                                         \
-    Result (*const init_filled)(VecT *const, ElT const, size_t const);         \
-    void (*const uninit)(VecT *const);                                         \
+    typedef struct private_vec_vtbl(VecT) private_vec_vtbl(VecT);              \
+    typedef struct VecT {                                                      \
+        size_t len, cap;                                                       \
+        size_t el_size;                                                        \
+        ElT *data;                                                             \
+        private_vec_vtbl(VecT) const *vtbl;                                    \
+    } VecT;                                                                    \
+    struct private_vec_vtbl(VecT) {                                            \
+        Result (*const init)(VecT *const);                                     \
+        Result (*const init_from_arr)(                                         \
+            VecT *const,                                                       \
+            ElT const *const,                                                  \
+            size_t const                                                       \
+        );                                                                     \
+        Result (*const init_filled)(VecT *const, ElT const, size_t const);     \
+        void (*const uninit)(VecT *const);                                     \
                                                                                \
-    ElT *(*const at)(VecT const *const, size_t const);                         \
-    ElT *(*const first)(VecT const *const);                                    \
-    ElT *(*const last)(VecT const *const);                                     \
+        ElT *(*const at)(VecT const *const, size_t const);                     \
+        ElT *(*const first)(VecT const *const);                                \
+        ElT *(*const last)(VecT const *const);                                 \
                                                                                \
-    Result (*const push)(VecT *const, ElT const);                              \
-    Result (*const insert)(VecT *const, size_t const, ElT const);              \
-    Result (*const remove)(VecT *const, size_t const);                         \
-    Result (*const pop)(VecT *const);                                          \
+        Result (*const push)(VecT *const, ElT const);                          \
+        Result (*const insert)(VecT *const, size_t const, ElT const);          \
+        Result (*const remove)(VecT *const, size_t const);                     \
+        Result (*const pop)(VecT *const);                                      \
                                                                                \
-    Result (*const clear)(VecT *const);                                        \
-  }
+        Result (*const clear)(VecT *const);                                    \
+    }
 
 #define private_vec_vtbl_init(self, VecT) private_vec_fn1(VecT, init_vtbl)(self)
 
@@ -50,7 +50,7 @@
 /// @param VecT vector type (for getting vtable)
 /// @return `Result`
 #define vec_init(self, VecT)                                                   \
-  (private_vec_vtbl_init((self), VecT), (self)->vtbl->init(self))
+    (private_vec_vtbl_init((self), VecT), (self)->vtbl->init(self))
 
 /// @brief Inits a vec and populates it with values from `arr`.
 /// @param self valid pointer
@@ -59,8 +59,8 @@
 /// @param len length of `arr`
 /// @return `Result`
 #define vec_init_from_arr(self, VecT, arr, len)                                \
-  (private_vec_vtbl_init((self), VecT),                                        \
-   (self)->vtbl->init_from_arr((self), (arr), (len)))
+    (private_vec_vtbl_init((self), VecT),                                      \
+     (self)->vtbl->init_from_arr((self), (arr), (len)))
 
 /// @brief Inits a vec and populates it `n` times with `element` value from
 /// `arr`.
@@ -70,8 +70,8 @@
 /// @param n how many times `element` is repeated
 /// @return `Result`
 #define vec_init_filled(self, VecT, element, n)                                \
-  (private_vec_vtbl_init((self), VecT),                                        \
-   (self)->vtbl->init_filled((self), (element), (n)))
+    (private_vec_vtbl_init((self), VecT),                                      \
+     (self)->vtbl->init_filled((self), (element), (n)))
 /// @brief Uninits a vec. Using other functions on an uninited vec can cause
 /// undefined behavior.
 /// @param self valid pointer
@@ -125,7 +125,7 @@
 /// @param element value to insert
 /// @return `Result`
 #define vec_insert(self, index, element)                                       \
-  ((self)->vtbl->insert((self), (index), (element)))
+    ((self)->vtbl->insert((self), (index), (element)))
 
 /// @brief Removes an element from a vec.
 /// @param self valid pointer
@@ -143,33 +143,34 @@
 /// @return `Result` (technically, failure is impossable, but who really knows?)
 #define vec_clear(self) ((self)->vtbl->clear(self))
 
-private_decl_vec(AnyVec, void const *);
+typedef void const *Any;
+private_decl_vec(AnyVec, Any);
 
 Result any_vec_init(AnyVec *const self, size_t const el_size);
 void any_vec_uninit(AnyVec *const self);
 
 Result any_vec_init_from_arr(
-  AnyVec *const self,
-  size_t const el_size,
-  void const *const arr,
-  size_t const len
+    AnyVec *const self,
+    size_t const el_size,
+    Any const *const arr,
+    size_t const len
 );
 Result any_vec_init_filled(
-  AnyVec *const self,
-  size_t const el_size,
-  void const *const element,
-  size_t const n
+    AnyVec *const self,
+    size_t const el_size,
+    Any const *const element,
+    size_t const n
 );
 
 void *any_vec_at(AnyVec const *const self, size_t const index);
 void *any_vec_first(AnyVec const *const self);
 void *any_vec_last(AnyVec const *const self);
 
-Result any_vec_push(AnyVec *const self, void const *const element);
+Result any_vec_push(AnyVec *const self, Any const *const element);
 Result any_vec_insert(
-  AnyVec *const self,
-  size_t const index,
-  void const *const element
+    AnyVec *const self,
+    size_t const index,
+    Any const *const element
 );
 Result any_vec_remove(AnyVec *const self, size_t const index);
 

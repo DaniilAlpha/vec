@@ -1,11 +1,11 @@
 #ifndef VecT
-# define VecT VecOfPtr
-# error "'VecT' for the template is not defined!"
+#  define VecT VecOfPtr
+#  error "'VecT' for the template is not defined!"
 #endif
 
 #ifndef ElT
-# define ElT void const *
-# error "'ElT' for the template is not defined!"
+#  define ElT Any
+#  error "'ElT' for the template is not defined!"
 #endif
 
 #include <stddef.h>
