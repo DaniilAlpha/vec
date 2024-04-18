@@ -1,9 +1,11 @@
 # Vec
+
 Plain-C type-safe vector data strucutre.
 
 The main goal was type-safety. It was achieved at the cost of a little performance overhead due to vtable usage, but still comparable to std's one.
 
-# Usage
+## Usage
+
 To allow type safety, the API is separated into two files. When you need to use the vector type, use: 
 ```c
 #define Self VecOfFloat // name of the vec type (vector struct is declared with it)
@@ -42,3 +44,7 @@ vec_uninit(&vec); // should be inited again after this call
 `vec_init`, `vec_push`, etc. are the function-like macros. This makes it easy to swap vector type to another one and not needing to rename a whole bunch of functions. I prefer to name them in lowercase, as they are (mostly) only shortcuts for acessing vtable. For example `vec_push(self)` expands to `self->vtbl->push(self)`. 
 
 For more examples, see [`test.c`](./test.c).
+
+## TODO 
+ - support custom allocators
+ - add logic to reserve vec capacity
