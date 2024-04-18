@@ -24,14 +24,14 @@ API looks like this:
 ```c
 VecOfFloat vec;
 // passing the right type here is crucial, as this is the step of determining the vtable to use on the vec
-if(vec_init(&vec, VecOfFloat) != Ok) exit(1);
+if(vec_init(&vec, VecOfFloat) != 0) exit(1);
 
 // all functions that may fail, return the `enum Result` representing the error occured
 // you may use the `unroll` macro that will return result if it is not `Ok`, or just comapre it with `Ok` (or `0`)
 
-if(vec_push(&vec, 0) != Ok || 
-    vec_push(&vec, 1) != Ok || 
-    vec_push(&vec, 2) != Ok) 
+if(vec_push(&vec, 0) != 0 || 
+    vec_push(&vec, 1) != 0 || 
+    vec_push(&vec, 2) != 0) 
     exit(1);
 
 for(float *el = vec_first(&vec); el <= vec_last(&vec); el++ ) 
