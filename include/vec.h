@@ -1,20 +1,18 @@
-#ifndef VecT
-#  define VecT VecOfPtr
-#  error "'VecT' for the template is not defined!"
+#ifndef Self
+#  define Self VecOfPtr
+#  error "'Self' for the template is not defined!"
 #endif
 
-#ifndef ElT
-#  define ElT Any
-#  error "'ElT' for the template is not defined!"
+#ifndef T
+#  define T Any
+#  error "'T' for the template is not defined!"
 #endif
 
-#include <stddef.h>
+#include "vec_decl.h"
 
-#include "any_vec.h"
+private_vec_decl(Self, T);
 
-private_decl_vec(VecT, ElT);
+void private_method(Self, init_vtbl)(Self *const self);
 
-void private_vec_fn1(VecT, init_vtbl)(VecT *const self);
-
-#undef VecT
-#undef ElT
+#undef Self
+#undef T

@@ -1,39 +1,39 @@
-#ifndef VecT
-#  define VecT VecOfPtr
-#  error "'VecT' for the template is not defined!"
+#ifndef Self
+#  define Self VecOfPtr
+#  error "'Self' for the template is not defined!"
 #endif
 
-#ifndef ElT
-#  define ElT Any
-#  error "'ElT' for the template is not defined!"
+#ifndef T
+#  define T Any
+#  error "'T' for the template is not defined!"
 #endif
 
 #include <stddef.h>
 
+#include <result.h>
+
 #include "any_vec.h"
+#include "vec_decl.h"
 
-#define private_vec_fn(name) private_vec_fn1(VecT, name)
+#define private_vec_method(name) private_method(Self, name)
 
-#define this_vec_init          private_vec_fn(init)
-#define this_vec_init_from_arr private_vec_fn(init_from_arr)
-#define this_vec_init_filled   private_vec_fn(init_filled)
+#define this_vec_init          private_vec_method(init)
+#define this_vec_init_from_arr private_vec_method(init_from_arr)
+#define this_vec_init_filled   private_vec_method(init_filled)
 
-#define this_vec_push   private_vec_fn(push)
-#define this_vec_insert private_vec_fn(insert)
+#define this_vec_push   private_vec_method(push)
+#define this_vec_insert private_vec_method(insert)
 
-#define this_vec_init_vtbl private_vec_fn(init_vtbl)
+#define this_vec_init_vtbl private_vec_method(init_vtbl)
 
-typedef struct VecT VecT;
+typedef struct Self Self;
 
-static Result this_vec_init(VecT *const self) {
+static Result this_vec_init(Self *const self) {
     return any_vec_init((AnyVec *)self, sizeof(*self->data));
 }
 
-static Result this_vec_init_from_arr(
-    VecT *const self,
-    ElT const *const arr,
-    size_t const len
-) {
+static Result
+this_vec_init_from_arr(Self *const self, T const *const arr, size_t const len) {
     return any_vec_init_from_arr(
         (AnyVec *)self,
         sizeof(*self->data),
@@ -42,7 +42,7 @@ static Result this_vec_init_from_arr(
     );
 }
 static Result
-this_vec_init_filled(VecT *const self, ElT const element, size_t const n) {
+this_vec_init_filled(Self *const self, T const element, size_t const n) {
     return any_vec_init_filled(
         (AnyVec *)self,
         sizeof(*self->data),
@@ -51,31 +51,29 @@ this_vec_init_filled(VecT *const self, ElT const element, size_t const n) {
     );
 }
 
-static Result this_vec_push(VecT *const self, ElT const element) {
+static Result this_vec_push(Self *const self, T const element) {
     return any_vec_push((AnyVec *)self, (Any const *)&element);
 }
 static Result
-this_vec_insert(VecT *const self, size_t const index, ElT const element) {
+this_vec_insert(Self *const self, size_t const index, T const element) {
     return any_vec_insert((AnyVec *)self, index, (Any const *)&element);
 }
 
-void this_vec_init_vtbl(VecT *const self) {
-    static private_vec_vtbl(VecT) const vtbl = {
+void this_vec_init_vtbl(Self *const self) {
+    static private_vec_vtbl(Self) const vtbl = {
         .init = this_vec_init,
         .init_from_arr = this_vec_init_from_arr,
         .init_filled = this_vec_init_filled,
-        .uninit = (void (*)(VecT *const))any_vec_uninit,
+        .uninit = (void (*)(Self *const))any_vec_uninit,
 
-        .at = (ElT * (*)(VecT const *const, size_t const)) any_vec_at,
-        .first = (ElT * (*)(VecT const *const)) any_vec_first,
-        .last = (ElT * (*)(VecT const *const)) any_vec_last,
+        .at = (T * (*)(Self const *const, size_t const)) any_vec_at,
 
         .push = this_vec_push,
         .insert = this_vec_insert,
-        .remove = (Result(*)(VecT *const, size_t const))any_vec_remove,
-        .pop = (Result(*)(VecT *const))any_vec_decrement,
+        .remove = (Result(*)(Self *const, size_t const))any_vec_remove,
+        .pop = (Result(*)(Self *const))any_vec_decrement,
 
-        .clear = (Result(*)(VecT *const))any_vec_reset,
+        .clear = (Result(*)(Self *const))any_vec_reset,
     };
     self->vtbl = &vtbl;
 }
@@ -87,7 +85,7 @@ void this_vec_init_vtbl(VecT *const self) {
 #undef this_vec_insert
 #undef this_vec_init_vtbl
 
-#undef private_vec_fn
+#undef private_vec_method
 
-#undef VecT
-#undef ElT
+#undef Self
+#undef T

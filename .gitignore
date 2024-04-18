@@ -1,6 +1,4 @@
 .vscode
-test_for_c
-test.c
 test
 makefile
 CMakeLists.txt
