@@ -50,3 +50,4 @@ The main goal of vec is type safety. This has been achieved at the cost of a sma
  - come up with the better name
  - support custom allocators
  - add logic to reserve vec capacity
+ - try optimize some functions (specifically push and pop) with use of `restrict` keyword
