@@ -47,7 +47,7 @@ See [`test.c`](./test.c) for more examples.
 The main goal of vec is type safety. This has been achieved at the cost of a small performance overhead over std::vector. (Possibly) due to the use of vtables, vec is slightly slower. However, when reallocating memory or moving large numbers of elements, the difference is negligible. On the other hand, it should use less disk space, since most of the logic is shared via non-typesafe functions covered by the typesafe API.
 
 ## TODO 
- - come up with the better name
+ - come up with better library name
  - support custom allocators
  - add logic to reserve vec capacity
- - try optimize some functions (specifically push and pop) with use of `restrict` keyword
+ - try optimize some functions (specifically push and insert) with use of `restrict` keyword
