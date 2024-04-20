@@ -5,6 +5,8 @@
 
 #include <result.h>
 
+#include "restrict.h"
+
 #define private_vtbl(Self)     Self##Vtbl
 #define private_vec_vtbl(Self) private_vtbl(Self)
 
@@ -14,7 +16,7 @@
 #define private_vec_decl(Self, T)                                              \
     typedef struct private_vec_vtbl(Self) private_vec_vtbl(Self);              \
     typedef struct Self {                                                      \
-        private_vec_vtbl(Self) const *vtbl;                                    \
+        private_vec_vtbl(Self) const *restrict vtbl;                           \
         size_t len, cap, el_size;                                              \
         T *data;                                                               \
     } Self;                                                                    \

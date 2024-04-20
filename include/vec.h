@@ -4,7 +4,7 @@
 #endif
 
 #ifndef T
-#  define T Any
+#  define T void const *
 #  error "'T' for the template is not defined!"
 #endif
 
