@@ -50,3 +50,4 @@ The main goal of vec is type safety. This has been achieved at the cost of a sma
  - come up with better library name
  - support custom allocators
  - add logic to reserve vec capacity
+ - make vec store `data_end`, `space_end` instead of `len` and `cap` to increase performance
