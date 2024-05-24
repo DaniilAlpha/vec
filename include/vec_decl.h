@@ -10,8 +10,8 @@
 #define private_vtbl(Self)     Self##Vtbl
 #define private_vec_vtbl(Self) private_vtbl(Self)
 
-#define private_method_(type, name) (private_##type##_##name)
-#define private_method(type, name)  private_method_(type, name)
+#define private_method_(Self, name) (private_##Self##_##name)
+#define private_method(Self, name)  private_method_(Self, name)
 
 #define private_vec_decl(Self, T)                                              \
     typedef struct private_vec_vtbl(Self) private_vec_vtbl(Self);              \

@@ -1,4 +1,5 @@
-.vscode
-test
-makefile
+.nvim
+.cache
+
+build/
 CMakeLists.txt
