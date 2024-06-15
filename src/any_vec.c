@@ -32,7 +32,7 @@ static Result any_vec_resize(AnyVec *const RESTRICT self, size_t new_cap) {
     if (new_data == NULL) return OutOfMemErr;
 
     self->_cap = new_cap;
-    self->_data = (void const **)new_data;
+    self->_data = new_data;
 
     return Ok;
 }
