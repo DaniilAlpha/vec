@@ -28,11 +28,11 @@ static Result any_vec_resize(AnyVec *const RESTRICT self, size_t new_cap) {
         new_cap = VEC_MIN_CAP;
     }
 
-    void *const new_data = realloc(self->_data, self->_el_size * new_cap);
+    uint8_t *const new_data = realloc(self->_data, self->_el_size * new_cap);
     if (new_data == NULL) return OutOfMemErr;
 
     self->_cap = new_cap;
-    self->_data = new_data;
+    self->_data = (void const **)new_data;
 
     return Ok;
 }
@@ -61,7 +61,7 @@ void any_vec_uninit(AnyVec *const self) {
 Result any_vec_init_from_arr(
     AnyVec *const self,
     size_t const el_size,
-    void const *const RESTRICT arr,
+    uint8_t const *const RESTRICT arr,
     size_t const len
 ) {
     any_vec_preinit(self, el_size);
@@ -76,7 +76,7 @@ Result any_vec_init_from_arr(
 Result any_vec_init_filled(
     AnyVec *const self,
     size_t const el_size,
-    void const *const RESTRICT element,
+    uint8_t const *const RESTRICT element,
     size_t const n
 ) {
     any_vec_preinit(self, el_size);
@@ -93,14 +93,14 @@ Result any_vec_init_filled(
     return Ok;
 }
 
-void *any_vec_at(AnyVec const *const RESTRICT self, size_t const index) {
+uint8_t *any_vec_at(AnyVec const *const RESTRICT self, size_t const index) {
     if (index >= self->_len) return NULL;
     uint8_t *const ptr = any_vec_at_nocheck(self, index);
     if (ptr < any_vec_at_nocheck(self, 0)) return NULL;  // TODO maybe useless
     return ptr;
 }
 
-Result any_vec_push(AnyVec *const self, void const *const RESTRICT element) {
+Result any_vec_push(AnyVec *const self, uint8_t const *const RESTRICT element) {
     UNROLL(any_vec_increment(self));
     memcpy(any_vec_at_nocheck(self, self->_len - 1), element, self->_el_size);
     return Ok;
@@ -108,7 +108,7 @@ Result any_vec_push(AnyVec *const self, void const *const RESTRICT element) {
 Result any_vec_insert(
     AnyVec *const self,
     size_t const index,
-    void const *const RESTRICT element
+    uint8_t const *const RESTRICT element
 ) {
     if (index > self->_len)
         return RangeErr;

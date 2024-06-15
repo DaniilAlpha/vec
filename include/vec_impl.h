@@ -38,7 +38,7 @@ this_vec_init_from_arr(Self *const self, T const *const arr, size_t const len) {
     return any_vec_init_from_arr(
         (AnyVec *)self,
         sizeof(*self->_data),
-        arr,
+        (uint8_t const *)arr,
         len
     );
 }
@@ -47,17 +47,17 @@ this_vec_init_filled(Self *const self, T const element, size_t const n) {
     return any_vec_init_filled(
         (AnyVec *)self,
         sizeof(*self->_data),
-        &element,
+        (uint8_t const *)&element,
         n
     );
 }
 
 static Result this_vec_push(Self *const self, T const element) {
-    return any_vec_push((AnyVec *)self, &element);
+    return any_vec_push((AnyVec *)self, (uint8_t const *)&element);
 }
 static Result
 this_vec_insert(Self *const self, size_t const index, T const element) {
-    return any_vec_insert((AnyVec *)self, index, &element);
+    return any_vec_insert((AnyVec *)self, index, (uint8_t const *)&element);
 }
 
 void this_vec_init_vtbl(Self *const self) {

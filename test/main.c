@@ -22,7 +22,7 @@
 
 VecOfFloat vec;
 
-MiunteResult vec_setup_test() {
+MiunteResult vec_setup_test(void) {
     MIUNTE_EXPECT(
         vec_init(&vec, VecOfFloat) == Ok,
         "initialization shoud not fail"
@@ -30,13 +30,13 @@ MiunteResult vec_setup_test() {
 
     MIUNTE_PASS();
 }
-MiunteResult vec_teardown_test() {
+MiunteResult vec_teardown_test(void) {
     vec_uninit(&vec);
 
     MIUNTE_PASS();
 }
 
-MiunteResult vec_test_init() {
+MiunteResult vec_test_init(void) {
     MIUNTE_EXPECT(vec_len(&vec) == 0, "new vector is empty");
     MIUNTE_EXPECT(
         vec_cap(&vec) == VEC_MIN_CAP,
@@ -51,7 +51,7 @@ MiunteResult vec_test_init() {
     MIUNTE_PASS();
 }
 
-MiunteResult vec_test_access_push_insert_clear() {
+MiunteResult vec_test_access_push_insert_clear(void) {
     MIUNTE_EXPECT(vec_first(&vec) == NULL, "empty vec has no first and last");
     MIUNTE_EXPECT(vec_last(&vec) == NULL, "empty vec has no first and last");
 
@@ -106,7 +106,7 @@ MiunteResult vec_test_access_push_insert_clear() {
     MIUNTE_PASS();
 }
 
-MiunteResult vec_test_pop_remove() {
+MiunteResult vec_test_pop_remove(void) {
     MIUNTE_EXPECT(
         vec_push(&vec, 0) == Ok && vec_push(&vec, 1) == Ok &&
             vec_push(&vec, 2) == Ok && vec_push(&vec, 3) == Ok,
@@ -140,7 +140,7 @@ MiunteResult vec_test_pop_remove() {
     MIUNTE_PASS();
 }
 
-MiunteResult vec_test_iteration() {
+MiunteResult vec_test_iteration(void) {
     for (size_t i = 0; i < 10; i++)
         MIUNTE_EXPECT(vec_push(&vec, i) == Ok, "push should not fail");
 
@@ -162,7 +162,7 @@ MiunteResult vec_test_iteration() {
     MIUNTE_PASS();
 }
 
-MiunteResult vec_test_capacity() {
+MiunteResult vec_test_capacity(void) {
     MIUNTE_EXPECT(
         vec_cap(&vec) == VEC_MIN_CAP && vec_len(&vec) == 0,
         "empty vec's capacity should be VEC_MIN_CAP"
@@ -197,7 +197,7 @@ MiunteResult vec_test_capacity() {
     MIUNTE_PASS();
 }
 
-MiunteResult vec_test_init_from_array() {
+MiunteResult vec_test_init_from_array(void) {
     vec_uninit(&vec);  // just to prevent memory leak
 
     float const array[] = {-15, 18, 124, 1326, 0};
@@ -219,7 +219,7 @@ MiunteResult vec_test_init_from_array() {
     MIUNTE_PASS();
 }
 
-MiunteResult vec_test_init_filled() {
+MiunteResult vec_test_init_filled(void) {
     vec_uninit(&vec);  // just to prevent memory leak
 
     size_t const n = 100;
@@ -237,7 +237,7 @@ MiunteResult vec_test_init_filled() {
     MIUNTE_PASS();
 }
 
-int main() {
+int main(void) {
     MIUNTE_RUN(
         vec_setup_test,
         vec_teardown_test,
