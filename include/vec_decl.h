@@ -8,26 +8,23 @@
 
 #include "restrict.h"
 
-#define private_vtbl(Self)     Self##Vtbl
-#define private_vec_vtbl(Self) private_vtbl(Self)
+#define INTERNAL__VTBL1(Self) Self##Vtbl
+#define INTERNAL__VTBL(Self)  INTERNAL__VTBL1(Self)
 
-#define private_method_(Self, name) (private_##Self##_##name)
-#define private_method(Self, name)  private_method_(Self, name)
+#define INTERNAL__METHOD1(Self, name) (internal_##Self##_##name)
+#define INTERNAL__METHOD(Self, name)  INTERNAL__METHOD1(Self, name)
 
-#define private_vec_decl(Self, T)                                              \
-    typedef struct private_vec_vtbl(Self) private_vec_vtbl(Self);              \
+#define INTERNAL__VEC_DECL(Self, T)                                            \
+    typedef struct INTERNAL__VTBL(Self) INTERNAL__VTBL(Self);                  \
     typedef struct Self {                                                      \
-        private_vec_vtbl(Self) const *restrict __vtbl;                         \
+        INTERNAL__VTBL(Self) const *RESTRICT __vtbl;                           \
         size_t _len, _cap, _el_size;                                           \
         T *_data;                                                              \
     } Self;                                                                    \
-    struct private_vec_vtbl(Self) {                                            \
+    struct INTERNAL__VTBL(Self) {                                              \
         Result (*const init)(Self *const);                                     \
-        Result (*const init_from_arr)(                                         \
-            Self *const,                                                       \
-            T const *const,                                                    \
-            size_t const                                                       \
-        );                                                                     \
+        Result (*const                                                         \
+                    init_from_arr)(Self *const, T const *const, size_t const); \
         Result (*const init_filled)(Self *const, T const, size_t const);       \
         void (*const uninit)(Self *const);                                     \
                                                                                \
@@ -41,14 +38,15 @@
         Result (*const clear)(Self *const);                                    \
     }
 
-#define private_vec_vtbl_init(self, Self) private_method(Self, init_vtbl)(self)
+#define INTERNAL__VEC_INIT_VTBL(self, Self)                                    \
+    INTERNAL__METHOD(Self, init_vtbl)(self)
 
 /// @brief Inits an ampty vec.
 /// @param self valid pointer
 /// @param Self vector type (for getting vtable)
 /// @return `Result`
 #define vec_init(self, Self)                                                   \
-    (private_vec_vtbl_init((self), Self), (self)->__vtbl->init(self))
+    (INTERNAL__VEC_INIT_VTBL((self), Self), (self)->__vtbl->init(self))
 /// @brief Uninits a vec. Using other functions on an uninited vec can cause
 /// undefined behavior.
 /// @param self valid pointer
@@ -62,7 +60,7 @@
 /// @param len length of `arr`
 /// @return `Result`
 #define vec_init_from_arr(self, Self, arr, len)                                \
-    (private_vec_vtbl_init((self), Self),                                      \
+    (INTERNAL__VEC_INIT_VTBL((self), Self),                                    \
      (self)->__vtbl->init_from_arr((self), (arr), (len)))
 
 /// @brief Inits a vec and populates it `n` times with `element` value from
@@ -73,7 +71,7 @@
 /// @param n how many times `element` is repeated
 /// @return `Result`
 #define vec_init_filled(self, Self, element, n)                                \
-    (private_vec_vtbl_init((self), Self),                                      \
+    (INTERNAL__VEC_INIT_VTBL((self), Self),                                    \
      (self)->__vtbl->init_filled((self), (element), (n)))
 
 /// @brief Get vec's len.

@@ -10,9 +10,9 @@
 
 #include "vec_decl.h"
 
-private_vec_decl(Self, T);
+INTERNAL__VEC_DECL(Self, T);
 
-void private_method(Self, init_vtbl)(Self *const self);
+void INTERNAL__METHOD(Self, init_vtbl)(Self *const self);
 
 #undef Self
 #undef T

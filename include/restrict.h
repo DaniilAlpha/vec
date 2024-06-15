@@ -2,7 +2,9 @@
 #define RESTRICT_H
 
 #ifdef __cplusplus
-#  define restrict
+#  define RESTRICT
+#else
+#  define RESTRICT restrict
 #endif
 
 #endif

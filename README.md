@@ -47,7 +47,6 @@ See [`test.c`](./test.c) for more examples.
 The main goal of vec is type safety. This has been achieved at the cost of a small performance overhead over std::vector. (Possibly) due to the use of vtables, vec is slightly slower. However, when reallocating memory or moving large numbers of elements, the difference is negligible. On the other hand, it should use less disk space, since most of the logic is shared via non-typesafe functions covered by the typesafe API.
 
 ## TODO
- - just realized that void pointer arithmetic is bad; consider replacing with uint8_t pointers
  - come up with better library name
  - support custom allocators
  - add logic to reserve vec capacity

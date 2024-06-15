@@ -1,4 +1,3 @@
-
 #include <stddef.h>
 
 #include <result.h>
@@ -14,19 +13,19 @@
 #ifndef T
 #  define T void const *
 #  error "'T' for the template is not defined!"
-private_vec_decl(Self, T);
+INTERNAL__VEC_DECL(Self, T);
 #endif
 
-#define private_vec_method(name) private_method(Self, name)
+#define INTERNAL__VEC_METHOD(name) INTERNAL__METHOD(Self, name)
 
-#define this_vec_init          private_vec_method(init)
-#define this_vec_init_from_arr private_vec_method(init_from_arr)
-#define this_vec_init_filled   private_vec_method(init_filled)
+#define this_vec_init          INTERNAL__VEC_METHOD(init)
+#define this_vec_init_from_arr INTERNAL__VEC_METHOD(init_from_arr)
+#define this_vec_init_filled   INTERNAL__VEC_METHOD(init_filled)
 
-#define this_vec_push   private_vec_method(push)
-#define this_vec_insert private_vec_method(insert)
+#define this_vec_push   INTERNAL__VEC_METHOD(push)
+#define this_vec_insert INTERNAL__VEC_METHOD(insert)
 
-#define this_vec_init_vtbl private_vec_method(init_vtbl)
+#define this_vec_init_vtbl INTERNAL__VEC_METHOD(init_vtbl)
 
 typedef struct Self Self;
 
@@ -62,7 +61,7 @@ this_vec_insert(Self *const self, size_t const index, T const element) {
 }
 
 void this_vec_init_vtbl(Self *const self) {
-    static private_vec_vtbl(Self) const vtbl = {
+    static INTERNAL__VTBL(Self) const vtbl = {
         .init = this_vec_init,
         .init_from_arr = this_vec_init_from_arr,
         .init_filled = this_vec_init_filled,
@@ -87,7 +86,7 @@ void this_vec_init_vtbl(Self *const self) {
 #undef this_vec_insert
 #undef this_vec_init_vtbl
 
-#undef private_vec_method
+#undef INTERNAL__VEC_METHOD
 
 #undef Self
 #undef T

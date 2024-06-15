@@ -9,7 +9,7 @@
 
 #define VEC_MIN_CAP (1)
 
-private_vec_decl(AnyVec, void const *);
+INTERNAL__VEC_DECL(AnyVec, void const *);
 
 Result any_vec_init(AnyVec *const self, size_t const el_size);
 void any_vec_uninit(AnyVec *const self);

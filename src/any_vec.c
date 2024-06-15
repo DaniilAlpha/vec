@@ -11,7 +11,7 @@
  *************/
 
 static __always_inline uint8_t *
-any_vec_at_nocheck(AnyVec const *const restrict self, size_t const index) {
+any_vec_at_nocheck(AnyVec const *const RESTRICT self, size_t const index) {
     return ((uint8_t *)self->_data) + self->_el_size * index;
 }
 
@@ -21,7 +21,7 @@ static void any_vec_preinit(AnyVec *const self, size_t const el_size) {
     self->_data = NULL;
 }
 
-static Result any_vec_resize(AnyVec *const restrict self, size_t new_cap) {
+static Result any_vec_resize(AnyVec *const RESTRICT self, size_t new_cap) {
     if (new_cap < VEC_MIN_CAP) {
         // TODO questinable, but for some reason was here
         // if (self->cap >= new_cap) return Ok;
@@ -61,7 +61,7 @@ void any_vec_uninit(AnyVec *const self) {
 Result any_vec_init_from_arr(
     AnyVec *const self,
     size_t const el_size,
-    void const *const restrict arr,
+    void const *const RESTRICT arr,
     size_t const len
 ) {
     any_vec_preinit(self, el_size);
@@ -76,14 +76,14 @@ Result any_vec_init_from_arr(
 Result any_vec_init_filled(
     AnyVec *const self,
     size_t const el_size,
-    void const *const restrict element,
+    void const *const RESTRICT element,
     size_t const n
 ) {
     any_vec_preinit(self, el_size);
     unroll(any_vec_resize(self, el_size * n));
 
     // WARN possible bug due to restrict usage
-    for (uint8_t *restrict el = (uint8_t *)self->_data;
+    for (uint8_t *RESTRICT el = (uint8_t *)self->_data;
          el <= any_vec_at_nocheck(self, n - 1);
          el += el_size)
         memcpy(el, element, el_size);
@@ -93,14 +93,14 @@ Result any_vec_init_filled(
     return Ok;
 }
 
-void *any_vec_at(AnyVec const *const restrict self, size_t const index) {
+void *any_vec_at(AnyVec const *const RESTRICT self, size_t const index) {
     if (index >= self->_len) return NULL;
     uint8_t *const ptr = any_vec_at_nocheck(self, index);
     if (ptr < any_vec_at_nocheck(self, 0)) return NULL;  // TODO maybe useless
     return ptr;
 }
 
-Result any_vec_push(AnyVec *const self, void const *const restrict element) {
+Result any_vec_push(AnyVec *const self, void const *const RESTRICT element) {
     unroll(any_vec_increment(self));
     memcpy(any_vec_at_nocheck(self, self->_len - 1), element, self->_el_size);
     return Ok;
@@ -108,7 +108,7 @@ Result any_vec_push(AnyVec *const self, void const *const restrict element) {
 Result any_vec_insert(
     AnyVec *const self,
     size_t const index,
-    void const *const restrict element
+    void const *const RESTRICT element
 ) {
     if (index > self->_len)
         return RangeErr;
