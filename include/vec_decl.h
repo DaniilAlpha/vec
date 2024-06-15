@@ -2,6 +2,7 @@
 #define VEC_DECL_H
 
 #include <stddef.h>
+#include <stdint.h>
 
 #include <result.h>
 
@@ -16,9 +17,9 @@
 #define private_vec_decl(Self, T)                                              \
     typedef struct private_vec_vtbl(Self) private_vec_vtbl(Self);              \
     typedef struct Self {                                                      \
-        private_vec_vtbl(Self) const *restrict vtbl;                           \
-        size_t len, cap, el_size;                                              \
-        T *data;                                                               \
+        private_vec_vtbl(Self) const *restrict __vtbl;                         \
+        size_t _len, _cap, _el_size;                                           \
+        T *_data;                                                              \
     } Self;                                                                    \
     struct private_vec_vtbl(Self) {                                            \
         Result (*const init)(Self *const);                                     \
@@ -47,12 +48,12 @@
 /// @param Self vector type (for getting vtable)
 /// @return `Result`
 #define vec_init(self, Self)                                                   \
-    (private_vec_vtbl_init((self), Self), (self)->vtbl->init(self))
+    (private_vec_vtbl_init((self), Self), (self)->__vtbl->init(self))
 /// @brief Uninits a vec. Using other functions on an uninited vec can cause
 /// undefined behavior.
 /// @param self valid pointer
 /// @return `void`
-#define vec_uninit(self) ((self)->vtbl->uninit(self))
+#define vec_uninit(self) ((self)->__vtbl->uninit(self))
 
 /// @brief Inits a vec and populates it with values from `arr`.
 /// @param self valid pointer
@@ -62,7 +63,7 @@
 /// @return `Result`
 #define vec_init_from_arr(self, Self, arr, len)                                \
     (private_vec_vtbl_init((self), Self),                                      \
-     (self)->vtbl->init_from_arr((self), (arr), (len)))
+     (self)->__vtbl->init_from_arr((self), (arr), (len)))
 
 /// @brief Inits a vec and populates it `n` times with `element` value from
 /// `arr`.
@@ -73,20 +74,20 @@
 /// @return `Result`
 #define vec_init_filled(self, Self, element, n)                                \
     (private_vec_vtbl_init((self), Self),                                      \
-     (self)->vtbl->init_filled((self), (element), (n)))
+     (self)->__vtbl->init_filled((self), (element), (n)))
 
 /// @brief Get vec's len.
 /// @param self valid pointer
 /// @return vec's len
-#define vec_len(self) ((size_t const)(self)->len)
+#define vec_len(self) ((size_t const)(self)->_len)
 /// @brief Get vec's capacity.
 /// @param self valid pointer
 /// @return vec's capacity
-#define vec_cap(self) ((size_t const)(self)->cap)
+#define vec_cap(self) ((size_t const)(self)->_cap)
 /// @brief Get vec's internal buffer.
 /// @param self valid pointer
 /// @return pointer to vec's buffer
-#define vec_buf(self) ((void const *const)(self)->data)
+#define vec_buf(self) ((uint8_t const *const)(self)->_data)
 
 /// @brief Gets the element (with bounds checking).
 /// @param self valid pointer
@@ -94,26 +95,26 @@
 /// @return
 ///   element pointer - success;
 ///   `NULL` - bounds check failed
-#define vec_at(self, index) ((self)->vtbl->at((self), (index)))
+#define vec_at(self, index) ((self)->__vtbl->at((self), (index)))
 /// @brief Gets the first element.
 /// @param self valid pointer
 /// @return
 ///   element pointer - success;
 ///   `NULL` – vec is empty
-#define vec_first(self) ((self)->len == 0 ? NULL : (self)->data)
+#define vec_first(self) ((self)->_len == 0 ? NULL : (self)->_data)
 /// @brief Gets the last element.
 /// @param self valid pointer
 /// @return
 ///   element pointer - success;
 ///   `NULL` – vec is empty
 #define vec_last(self)                                                         \
-    ((self)->len == 0 ? NULL : (self)->data + (self)->len - 1)
+    ((self)->_len == 0 ? NULL : (self)->_data + (self)->_len - 1)
 
 /// @brief Pushes an element into a vec.
 /// @param self valid pointer
 /// @param element value to push
 /// @return `Result`
-#define vec_push(self, element) ((self)->vtbl->push((self), (element)))
+#define vec_push(self, element) ((self)->__vtbl->push((self), (element)))
 
 /// @brief Inserts an element into a vec.
 /// @param self valid pointer
@@ -121,22 +122,22 @@
 /// @param element value to insert
 /// @return `Result`
 #define vec_insert(self, index, element)                                       \
-    ((self)->vtbl->insert((self), (index), (element)))
+    ((self)->__vtbl->insert((self), (index), (element)))
 
 /// @brief Removes an element from a vec.
 /// @param self valid pointer
 /// @param index index at which to remove
 /// @return `Result`
-#define vec_remove(self, index) ((self)->vtbl->remove((self), (index)))
+#define vec_remove(self, index) ((self)->__vtbl->remove((self), (index)))
 
 /// @brief Pops an element from a vec.
 /// @param self valid pointer
 /// @return `Result`
-#define vec_pop(self) ((self)->vtbl->pop(self))
+#define vec_pop(self) ((self)->__vtbl->pop(self))
 
 /// @brief Clears a vec.
 /// @param self valid pointer
 /// @return `Result` (technically, failure is impossable, but who really knows?)
-#define vec_clear(self) ((self)->vtbl->clear(self))
+#define vec_clear(self) ((self)->__vtbl->clear(self))
 
 #endif

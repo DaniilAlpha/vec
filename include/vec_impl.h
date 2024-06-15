@@ -1,3 +1,11 @@
+
+#include <stddef.h>
+
+#include <result.h>
+
+#include "any_vec.h"
+#include "vec_decl.h"
+
 #ifndef Self
 #  define Self VecOfPtr
 #  error "'Self' for the template is not defined!"
@@ -6,14 +14,8 @@
 #ifndef T
 #  define T void const *
 #  error "'T' for the template is not defined!"
+private_vec_decl(Self, T);
 #endif
-
-#include <stddef.h>
-
-#include <result.h>
-
-#include "any_vec.h"
-#include "vec_decl.h"
 
 #define private_vec_method(name) private_method(Self, name)
 
@@ -29,18 +31,23 @@
 typedef struct Self Self;
 
 static Result this_vec_init(Self *const self) {
-    return any_vec_init((AnyVec *)self, sizeof(*self->data));
+    return any_vec_init((AnyVec *)self, sizeof(*self->_data));
 }
 
 static Result
 this_vec_init_from_arr(Self *const self, T const *const arr, size_t const len) {
-    return any_vec_init_from_arr((AnyVec *)self, sizeof(*self->data), arr, len);
+    return any_vec_init_from_arr(
+        (AnyVec *)self,
+        sizeof(*self->_data),
+        arr,
+        len
+    );
 }
 static Result
 this_vec_init_filled(Self *const self, T const element, size_t const n) {
     return any_vec_init_filled(
         (AnyVec *)self,
-        sizeof(*self->data),
+        sizeof(*self->_data),
         &element,
         n
     );
@@ -70,7 +77,7 @@ void this_vec_init_vtbl(Self *const self) {
 
         .clear = (Result(*)(Self *const))any_vec_reset,
     };
-    self->vtbl = &vtbl;
+    self->__vtbl = &vtbl;
 }
 
 #undef this_vec_init
