@@ -1,0 +1,6 @@
+[submodule "result"]
+	path = result
+	url = git@github.com:DaniilAlpha/result
+[submodule "miunte"]
+	path = miunte
+	url = git@github.com:DaniilAlpha/miunte
