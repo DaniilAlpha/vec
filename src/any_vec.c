@@ -38,7 +38,7 @@ static Result any_vec_resize(AnyVec *const RESTRICT self, size_t new_cap) {
 }
 
 static inline Result any_vec_increment(AnyVec *const self) {
-    if (self->_len == self->_cap) unroll(any_vec_resize(self, self->_cap << 1));
+    if (self->_len == self->_cap) UNROLL(any_vec_resize(self, self->_cap << 1));
     self->_len++;
     return Ok;
 }
@@ -65,7 +65,7 @@ Result any_vec_init_from_arr(
     size_t const len
 ) {
     any_vec_preinit(self, el_size);
-    unroll(any_vec_resize(self, el_size * len));
+    UNROLL(any_vec_resize(self, el_size * len));
 
     memcpy(self->_data, arr, el_size * len);
 
@@ -80,7 +80,7 @@ Result any_vec_init_filled(
     size_t const n
 ) {
     any_vec_preinit(self, el_size);
-    unroll(any_vec_resize(self, el_size * n));
+    UNROLL(any_vec_resize(self, el_size * n));
 
     // WARN possible bug due to restrict usage
     for (uint8_t *RESTRICT el = (uint8_t *)self->_data;
@@ -101,7 +101,7 @@ void *any_vec_at(AnyVec const *const RESTRICT self, size_t const index) {
 }
 
 Result any_vec_push(AnyVec *const self, void const *const RESTRICT element) {
-    unroll(any_vec_increment(self));
+    UNROLL(any_vec_increment(self));
     memcpy(any_vec_at_nocheck(self, self->_len - 1), element, self->_el_size);
     return Ok;
 }
@@ -115,7 +115,7 @@ Result any_vec_insert(
     else if (index == self->_len)
         return any_vec_push(self, element);
 
-    unroll(any_vec_increment(self));
+    UNROLL(any_vec_increment(self));
 
     uint8_t *const pos = any_vec_at_nocheck(self, index);
     memmove(
@@ -144,7 +144,7 @@ Result any_vec_decrement(AnyVec *const self) {
     if (self->_len == 0) return RangeErr;
 
     size_t const new_cap = self->_cap >> 1;
-    if (new_cap >= self->_len - 1) unroll(any_vec_resize(self, new_cap));
+    if (new_cap >= self->_len - 1) UNROLL(any_vec_resize(self, new_cap));
 
     self->_len--;
 

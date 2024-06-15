@@ -10,6 +10,7 @@ To provide type safety, the API is split into two files. If you need to use the 
 #define T    float // element type
 #include <vec.h> // vector declaration using previously defined `Self` and `T`
 // `Self` and `T` have been undefined by `vec.h`
+
 ```
 
 And **only once** include the implementation file:
@@ -27,11 +28,11 @@ VecOfFloat vec;
 if(vec_init(&vec, VecOfFloat) != Ok) return 1;
 
 // all functions that may fail, return the `enum Result` representing the error that occured
-// you can use the `unroll` macro, which will return the result if it is not `Ok`, or just comapre it to `Ok`
+// you can use the `UNROLL` macro, which will return the result if it is not `Ok`, or just comapre it to `Ok`
 
-unroll(vec_push(&vec, 0)); 
-unroll(vec_push(&vec, 1)); 
-unroll(vec_push(&vec, 2)); 
+UNROLL(vec_push(&vec, 0)); 
+UNROLL(vec_push(&vec, 1)); 
+UNROLL(vec_push(&vec, 2)); 
 
 // this should be done carefully as `vec_first` and `vec_last` return `NULL` if the vec is empty
 for(float *el = vec_first(&vec); el <= vec_last(&vec); el++ ) 
