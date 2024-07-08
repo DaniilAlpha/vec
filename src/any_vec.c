@@ -93,7 +93,7 @@ Result any_vec_init_filled(
 uint8_t *any_vec_at(AnyVec const *const RESTRICT self, size_t const index) {
     if (index >= self->_len) return NULL;
     uint8_t *const ptr = any_vec_at_nocheck(self, index);
-    if (ptr < any_vec_at_nocheck(self, 0)) return NULL;  // TODO maybe useless
+    if (ptr < any_vec_at_nocheck(self, 0)) return NULL;  // TODO? maybe useless
     return ptr;
 }
 
