@@ -22,11 +22,8 @@ static void any_vec_preinit(AnyVec *const self, size_t const el_size) {
 }
 
 static Result any_vec_resize(AnyVec *const RESTRICT self, size_t new_cap) {
-    if (new_cap < VEC_MIN_CAP) {
-        // TODO questinable, but for some reason was here
-        // if (self->cap >= new_cap) return Ok;
-        new_cap = VEC_MIN_CAP;
-    }
+    if (new_cap < VEC_MIN_CAP) new_cap = VEC_MIN_CAP;
+    if (self->_cap == new_cap) return Ok;
 
     uint8_t *const new_data = realloc(self->_data, self->_el_size * new_cap);
     if (new_data == NULL) return OutOfMemErr;
