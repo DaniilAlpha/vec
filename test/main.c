@@ -206,11 +206,11 @@ MiunteResult vec_test_init_from_array(void) {
             &vec,
             VecOfFloat,
             array,
-            sizeof(array) / sizeof(*array)
+            sizeof(array) / sizeof(array[0])
         ) == Ok,
         "initialization should not fail"
     );
-    for (size_t i = 0; i < sizeof(array) / sizeof(*array); i++)
+    for (size_t i = 0; i < sizeof(array) / sizeof(array[0]); i++)
         MIUNTE_EXPECT(
             *vec_at(&vec, i) == array[i],
             "elements of vec init from an array corresponds to the array's elements"

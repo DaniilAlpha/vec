@@ -30,14 +30,14 @@ INTERNAL__VEC_DECL(Self, T);
 typedef struct Self Self;
 
 static Result this_vec_init(Self *const self) {
-    return any_vec_init((AnyVec *)self, sizeof(*self->_data));
+    return any_vec_init((AnyVec *)self, sizeof(self->_data[0]));
 }
 
 static Result
 this_vec_init_from_arr(Self *const self, T const *const arr, size_t const len) {
     return any_vec_init_from_arr(
         (AnyVec *)self,
-        sizeof(*self->_data),
+        sizeof(self->_data[0]),
         (uint8_t const *)arr,
         len
     );
@@ -46,7 +46,7 @@ static Result
 this_vec_init_filled(Self *const self, T const element, size_t const n) {
     return any_vec_init_filled(
         (AnyVec *)self,
-        sizeof(*self->_data),
+        sizeof(self->_data[0]),
         (uint8_t const *)&element,
         n
     );
