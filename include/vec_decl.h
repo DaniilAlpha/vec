@@ -18,10 +18,12 @@
     typedef struct INTERNAL__VTBL(Self) INTERNAL__VTBL(Self);                  \
     typedef struct Self {                                                      \
         INTERNAL__VTBL(Self) const *RESTRICT __vtbl;                           \
-        size_t _len, _cap, _el_size;                                           \
+        size_t _len, _cap;                                                     \
         T *_data;                                                              \
     } Self;                                                                    \
     struct INTERNAL__VTBL(Self) {                                              \
+        size_t const el_size;                                                  \
+                                                                               \
         Result (*const init)(Self *const);                                     \
         Result (*const                                                         \
                     init_from_arr)(Self *const, T const *const, size_t const); \

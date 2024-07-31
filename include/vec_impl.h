@@ -30,26 +30,16 @@ INTERNAL__VEC_DECL(Self, T);
 typedef struct Self Self;
 
 static Result this_vec_init(Self *const self) {
-    return any_vec_init((AnyVec *)self, sizeof(self->_data[0]));
+    return any_vec_init((AnyVec *)self);
 }
 
 static Result
 this_vec_init_from_arr(Self *const self, T const *const arr, size_t const len) {
-    return any_vec_init_from_arr(
-        (AnyVec *)self,
-        sizeof(self->_data[0]),
-        (uint8_t const *)arr,
-        len
-    );
+    return any_vec_init_from_arr((AnyVec *)self, (uint8_t const *)arr, len);
 }
 static Result
 this_vec_init_filled(Self *const self, T const element, size_t const n) {
-    return any_vec_init_filled(
-        (AnyVec *)self,
-        sizeof(self->_data[0]),
-        (uint8_t const *)&element,
-        n
-    );
+    return any_vec_init_filled((AnyVec *)self, (uint8_t const *)&element, n);
 }
 
 static Result this_vec_push(Self *const self, T const element) {
@@ -62,6 +52,8 @@ this_vec_insert(Self *const self, size_t const index, T const element) {
 
 void this_vec_init_vtbl(Self *const self) {
     static INTERNAL__VTBL(Self) const vtbl = {
+        .el_size = sizeof(self->_data[0]),
+
         .init = this_vec_init,
         .init_from_arr = this_vec_init_from_arr,
         .init_filled = this_vec_init_filled,

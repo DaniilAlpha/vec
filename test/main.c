@@ -44,7 +44,7 @@ MiunteResult vec_test_init(void) {
     );
     MIUNTE_EXPECT(vec_buf(&vec) != NULL, "new vec's buf isn't NULL");
     MIUNTE_EXPECT(
-        vec._el_size == sizeof(float),
+        vec.__vtbl->el_size == sizeof(float),
         "new vec's el_size as MIUNTE_EXPECTed"
     );
 
@@ -152,7 +152,7 @@ MiunteResult vec_test_iteration(void) {
         "vec's capacity should be VEC_MIN_CAP after clear"
     );
     MIUNTE_EXPECT(
-        vec._el_size == sizeof(float),
+        vec.__vtbl->el_size == sizeof(float),
         "vec's el_size should be as MIUNTE_EXPECTed after clear"
     );
 

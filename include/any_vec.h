@@ -11,18 +11,16 @@
 
 INTERNAL__VEC_DECL(AnyVec, uint8_t);
 
-Result any_vec_init(AnyVec *const self, size_t const el_size);
+Result any_vec_init(AnyVec *const self);
 void any_vec_uninit(AnyVec *const self);
 
 Result any_vec_init_from_arr(
     AnyVec *const self,
-    size_t const el_size,
     uint8_t const *const arr,
     size_t const len
 );
 Result any_vec_init_filled(
     AnyVec *const self,
-    size_t const el_size,
     uint8_t const *const element,
     size_t const n
 );
