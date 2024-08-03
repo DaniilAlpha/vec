@@ -2,12 +2,18 @@
 #define ANY_VEC_H
 
 #include <stddef.h>
+#include <stdint.h>
 
 #include <result.h>
 
-#include "vec_decl.h"
-
 #define VEC_MIN_CAP (1)
+
+#define INTERNAL__VEC_DECL(Self, T)                                            \
+    typedef struct Self {                                                      \
+        T *_data;                                                              \
+        size_t _len, _cap;                                                     \
+        size_t _el_size;                                                       \
+    } Self
 
 INTERNAL__VEC_DECL(AnyVec, uint8_t);
 

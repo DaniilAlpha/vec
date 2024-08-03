@@ -12,7 +12,7 @@
 
 static __always_inline uint8_t *
 any_vec_at_nocheck(AnyVec const *const RESTRICT self, size_t const index) {
-    return ((uint8_t *)self->_data) + self->__vtbl->el_size * index;
+    return ((uint8_t *)self->_data) + self->_el_size * index;
 }
 
 static void any_vec_preinit(AnyVec *const self) {
@@ -24,8 +24,7 @@ static Result any_vec_resize(AnyVec *const RESTRICT self, size_t new_cap) {
     if (new_cap < VEC_MIN_CAP) new_cap = VEC_MIN_CAP;
     if (self->_cap == new_cap) return Ok;
 
-    uint8_t *const new_data =
-        realloc(self->_data, self->__vtbl->el_size * new_cap);
+    uint8_t *const new_data = realloc(self->_data, self->_el_size * new_cap);
     if (new_data == NULL) return OutOfMemErr;
 
     self->_cap = new_cap;
@@ -46,7 +45,7 @@ static inline Result any_vec_increment(AnyVec *const self) {
 
 Result any_vec_init(AnyVec *const self) {
     any_vec_preinit(self);
-    any_vec_resize(self, VEC_MIN_CAP);
+    UNROLL(any_vec_resize(self, VEC_MIN_CAP));
 
     return Ok;
 }
@@ -61,9 +60,9 @@ Result any_vec_init_from_arr(
     size_t const len
 ) {
     any_vec_preinit(self);
-    UNROLL(any_vec_resize(self, self->__vtbl->el_size * len));
+    UNROLL(any_vec_resize(self, self->_el_size * len));
 
-    memcpy(self->_data, arr, self->__vtbl->el_size * len);
+    memcpy(self->_data, arr, self->_el_size * len);
 
     self->_len = len;
 
@@ -75,13 +74,13 @@ Result any_vec_init_filled(
     size_t const n
 ) {
     any_vec_preinit(self);
-    UNROLL(any_vec_resize(self, self->__vtbl->el_size * n));
+    UNROLL(any_vec_resize(self, self->_el_size * n));
 
     // WARN possible bug due to restrict usage
     for (uint8_t *RESTRICT el = (uint8_t *)self->_data;
          el <= any_vec_at_nocheck(self, n - 1);
-         el += self->__vtbl->el_size)
-        memcpy(el, element, self->__vtbl->el_size);
+         el += self->_el_size)
+        memcpy(el, element, self->_el_size);
 
     self->_len = n;
 
@@ -97,11 +96,7 @@ uint8_t *any_vec_at(AnyVec const *const RESTRICT self, size_t const index) {
 
 Result any_vec_push(AnyVec *const self, uint8_t const *const RESTRICT element) {
     UNROLL(any_vec_increment(self));
-    memcpy(
-        any_vec_at_nocheck(self, self->_len - 1),
-        element,
-        self->__vtbl->el_size
-    );
+    memcpy(any_vec_at_nocheck(self, self->_len - 1), element, self->_el_size);
     return Ok;
 }
 Result any_vec_insert(
@@ -118,11 +113,11 @@ Result any_vec_insert(
 
     uint8_t *const pos = any_vec_at_nocheck(self, index);
     memmove(
-        pos + self->__vtbl->el_size,
+        pos + self->_el_size,
         pos,
-        self->__vtbl->el_size * ((self->_len - 1) - index)
+        self->_el_size * ((self->_len - 1) - index)
     );
-    memcpy(pos, element, self->__vtbl->el_size);
+    memcpy(pos, element, self->_el_size);
 
     return Ok;
 }
@@ -132,8 +127,8 @@ Result any_vec_remove(AnyVec *const self, size_t const index) {
         uint8_t *const pos = any_vec_at_nocheck(self, index);
         memmove(
             pos,
-            pos + self->__vtbl->el_size,
-            self->__vtbl->el_size * ((self->_len - 1) - index)
+            pos + self->_el_size,
+            self->_el_size * ((self->_len - 1) - index)
         );
     }
     return any_vec_decrement(self);
