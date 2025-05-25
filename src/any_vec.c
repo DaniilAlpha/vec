@@ -10,7 +10,7 @@
  ** private **
  *************/
 
-static __always_inline uint8_t *
+static inline __attribute__((always_inline)) uint8_t *
 any_vec_at_nocheck(AnyVec const *const RESTRICT self, size_t const index) {
     return ((uint8_t *)self->_data) + self->_el_size * index;
 }
