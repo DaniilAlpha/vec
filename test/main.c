@@ -44,10 +44,10 @@ MiunteResult vec_test_init(void) {
 
 MiunteResult vec_test_access_push_insert_clear(void) {
     MIUNTE_EXPECT(
-        my_vec_first(&vec) == NULL,
+        my_vec_start(&vec) == NULL,
         "empty vec has no first and last"
     );
-    MIUNTE_EXPECT(my_vec_last(&vec) == NULL, "empty vec has no first and last");
+    MIUNTE_EXPECT(my_vec_end(&vec) == NULL, "empty vec has no first and last");
 
     MIUNTE_EXPECT(
         my_vec_push(&vec, 24) == Ok && my_vec_push(&vec, 25) == Ok,
@@ -58,7 +58,7 @@ MiunteResult vec_test_access_push_insert_clear(void) {
         "after element pushed, len should be 1"
     );
     MIUNTE_EXPECT(
-        *my_vec_first(&vec) == 24 && *my_vec_last(&vec) == 25,
+        *my_vec_start(&vec) == 24 && *(my_vec_end(&vec) - 1) == 25,
         "elements should be as pushed"
     );
 
@@ -72,7 +72,7 @@ MiunteResult vec_test_access_push_insert_clear(void) {
         "after third element inserted, len should be three"
     );
     MIUNTE_EXPECT(
-        *my_vec_first(&vec) == 13.f && a == 12,
+        *my_vec_start(&vec) == 13.f && a == 12,
         "inserted element should be copied"
     );
     MIUNTE_EXPECT(
@@ -81,11 +81,11 @@ MiunteResult vec_test_access_push_insert_clear(void) {
     );
 
     MIUNTE_EXPECT(
-        my_vec_first(&vec) == my_vec_at(&vec, 0),
+        my_vec_start(&vec) == my_vec_at(&vec, 0),
         "two-el vec should have first at 0"
     );
     MIUNTE_EXPECT(
-        my_vec_last(&vec) == my_vec_at(&vec, 2),
+        my_vec_end(&vec) - 1 == my_vec_at(&vec, 2),
         "three-el vec should have last at 2"
     );
 

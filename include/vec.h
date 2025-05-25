@@ -25,19 +25,20 @@ INTERNAL__VEC_DECL(Self, T);
 #define this_vec_init_filled   INTERNAL__VEC_METHOD(init_filled)
 #define this_vec_uninit        INTERNAL__VEC_METHOD(uninit)
 
-#define this_vec_get_len INTERNAL__VEC_METHOD(get_len)
-#define this_vec_get_cap INTERNAL__VEC_METHOD(get_cap)
-#define this_vec_get_buf INTERNAL__VEC_METHOD(get_buf)
+#define this_vec_len INTERNAL__VEC_METHOD(get_len)
+#define this_vec_cap INTERNAL__VEC_METHOD(get_cap)
+#define this_vec_buf INTERNAL__VEC_METHOD(get_buf)
 
 #define this_vec_at    INTERNAL__VEC_METHOD(at)
-#define this_vec_first INTERNAL__VEC_METHOD(first)
-#define this_vec_last  INTERNAL__VEC_METHOD(last)
+#define this_vec_start INTERNAL__VEC_METHOD(start)
+#define this_vec_end   INTERNAL__VEC_METHOD(end)
 
 #define this_vec_push   INTERNAL__VEC_METHOD(push)
 #define this_vec_insert INTERNAL__VEC_METHOD(insert)
 #define this_vec_remove INTERNAL__VEC_METHOD(remove)
 #define this_vec_pop    INTERNAL__VEC_METHOD(pop)
-#define this_vec_clear  INTERNAL__VEC_METHOD(clear)
+
+#define this_vec_clear INTERNAL__VEC_METHOD(clear)
 
 /// Inits an ampty vec.
 /// `self` - valid pointer.
@@ -70,36 +71,30 @@ static inline void this_vec_uninit(Self *const self) {
 
 /// Get vec's len.
 /// `self` - valid pointer.
-static inline size_t this_vec_get_len(Self const *const self) {
-    return self->_len;
-}
+static inline size_t this_vec_len(Self const *const self) { return self->_len; }
 /// Get vec's capacity.
 /// `self` - valid pointer.
-static inline size_t this_vec_get_cap(Self const *const self) {
-    return self->_cap;
-}
+static inline size_t this_vec_cap(Self const *const self) { return self->_cap; }
 /// Get vec's internal buffer.
 /// `self` - valid pointer.
-static inline void *this_vec_get_buf(Self const *const self) {
-    return self->_data;
-}
+static inline void *this_vec_buf(Self const *const self) { return self->_data; }
 
-/// Gets the element (with bounds checking), or `NULL` if `index` is out of
+/// Gets the element, or `NULL` if `index` is out of
 /// bounds.
 /// `self` - valid pointer.
 /// `index` - any number.
 static inline T *this_vec_at(Self const *const self, size_t const index) {
     return (T *)any_vec_at((AnyVec const *)self, index);
 }
-/// Gets the first element, or `NULL` if vec is empty.
+/// Gets the vec's start (the first element), or `NULL` if vec is empty.
 /// `self` - valid pointer.
-static inline T *this_vec_first(Self const *const self) {
+static inline T *this_vec_start(Self const *const self) {
     return self->_len == 0 ? NULL : self->_data;
 }
-/// Gets the last element, or `NULL` if vec is empty.
+/// Gets the vec's end (just past the last element), or `NULL` if vec is empty.
 /// `self` - valid pointer.
-static inline T *this_vec_last(Self const *const self) {
-    return self->_len == 0 ? NULL : self->_data + self->_len - 1;
+static inline T *this_vec_end(Self const *const self) {
+    return self->_len == 0 ? NULL : self->_data + self->_len;
 }
 
 /// Pushes an element into a vec.
@@ -139,13 +134,13 @@ static inline Result this_vec_clear(Self *const self) {
 #undef this_vec_init_filled
 #undef this_vec_uninit
 
-#undef this_vec_get_len
-#undef this_vec_get_cap
-#undef this_vec_get_buf
+#undef this_vec_len
+#undef this_vec_cap
+#undef this_vec_buf
 
 #undef this_vec_at
-#undef this_vec_first
-#undef this_vec_last
+#undef this_vec_start
+#undef this_vec_end
 
 #undef this_vec_push
 #undef this_vec_insert
