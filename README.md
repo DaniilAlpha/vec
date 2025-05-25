@@ -42,7 +42,7 @@ See [`test.c`](./test.c) for more examples.
 > [!note]
 > You may wonder, what if someone wants to change the vec's type, but don't want to rename a bunch of functions all througout the code? There is actually a pretty elegant solution. In languages, where vector is built in, it is usually used as a generic with a type parameter. This is defenetely not a bad thing, but sometimes can be a little bit messy, especially with longer or nested type names. Also this is not really a good suit for C.
 >
-So, my advice is naming vecs not based on the element type, but based on their purpose, for example:
+> So, my advice is naming vecs not based on the element type, but based on their purpose, for example:
 >
 > ```c
 > #define Self VecOfConstCharPtr // bad
