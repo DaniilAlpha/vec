@@ -66,6 +66,7 @@ this_vec_init_filled(Self *const self, T const element, size_t const n) {
 /// behavior.
 /// `self` - valid pointer.
 static inline void this_vec_uninit(Self *const self) {
+    self->_el_size = 0;
     any_vec_uninit((AnyVec *)self);
 }
 
