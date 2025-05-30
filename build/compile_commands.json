@@ -1,7 +1,0 @@
-[
-{
-  "directory": "/home/daniil/Documents/_projects/vec/build",
-  "command": "/usr/bin/cc  -I/home/daniil/Documents/_projects/vec/include -I/home/daniil/Documents/_projects/vec/external/result -g -Og -g -W -Wall -Wextra -Wformat -pedantic -fsanitize=address -o CMakeFiles/vec.dir/src/any_vec.c.o -c /home/daniil/Documents/_projects/vec/src/any_vec.c",
-  "file": "/home/daniil/Documents/_projects/vec/src/any_vec.c"
-}
-]

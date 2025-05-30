@@ -1,3 +1,0 @@
-/home/daniil/Documents/_projects/vec/build/CMakeFiles/vec.dir
-/home/daniil/Documents/_projects/vec/build/CMakeFiles/edit_cache.dir
-/home/daniil/Documents/_projects/vec/build/CMakeFiles/rebuild_cache.dir
