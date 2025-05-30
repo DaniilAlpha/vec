@@ -1,5 +1,3 @@
-.nvim
 .cache
 
-build/
-CMakeLists.txt
+test/build/

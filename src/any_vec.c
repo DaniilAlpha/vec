@@ -60,7 +60,7 @@ Result any_vec_init_from_arr(
     size_t const len
 ) {
     any_vec_preinit(self);
-    UNROLL(any_vec_resize(self, self->_el_size * len));
+    UNROLL(any_vec_resize(self, len));
 
     memcpy(self->_data, arr, self->_el_size * len);
 
@@ -74,7 +74,7 @@ Result any_vec_init_filled(
     size_t const n
 ) {
     any_vec_preinit(self);
-    UNROLL(any_vec_resize(self, self->_el_size * n));
+    UNROLL(any_vec_resize(self, n));
 
     // WARN possible bug due to restrict usage
     for (uint8_t *RESTRICT el = (uint8_t *)self->_data;

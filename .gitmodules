@@ -1,6 +1,6 @@
 [submodule "result"]
-	path = result
+	path = external/result
 	url = git@github.com:DaniilAlpha/result.git
 [submodule "miunte"]
-	path = miunte
+	path = test/miunte
 	url = git@github.com:DaniilAlpha/miunte.git

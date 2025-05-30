@@ -25,9 +25,9 @@ INTERNAL__VEC_DECL(Self, T);
 #define this_vec_init_filled   INTERNAL__VEC_METHOD(init_filled)
 #define this_vec_uninit        INTERNAL__VEC_METHOD(uninit)
 
-#define this_vec_len INTERNAL__VEC_METHOD(get_len)
-#define this_vec_cap INTERNAL__VEC_METHOD(get_cap)
-#define this_vec_buf INTERNAL__VEC_METHOD(get_buf)
+#define this_vec_len INTERNAL__VEC_METHOD(len)
+#define this_vec_cap INTERNAL__VEC_METHOD(cap)
+#define this_vec_buf INTERNAL__VEC_METHOD(buf)
 
 #define this_vec_at    INTERNAL__VEC_METHOD(at)
 #define this_vec_start INTERNAL__VEC_METHOD(start)
@@ -52,6 +52,7 @@ static inline Result this_vec_init(Self *const self) {
 /// `len` - length of `arr`.
 static inline Result
 this_vec_init_from_arr(Self *const self, T const *const arr, size_t const len) {
+    self->_el_size = sizeof(self->_data[0]);
     return any_vec_init_from_arr((AnyVec *)self, (uint8_t const *)arr, len);
 }
 /// Inits a vec and populates it `n` times with the `element` value.
@@ -60,6 +61,7 @@ this_vec_init_from_arr(Self *const self, T const *const arr, size_t const len) {
 /// `n` - how many times `element` is repeated.
 static inline Result
 this_vec_init_filled(Self *const self, T const element, size_t const n) {
+    self->_el_size = sizeof(self->_data[0]);
     return any_vec_init_filled((AnyVec *)self, (uint8_t const *)&element, n);
 }
 /// Uninits a vec. Using other functions on an uninited vec can cause undefined
